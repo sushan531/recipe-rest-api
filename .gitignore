@@ -102,3 +102,14 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+
+**/venv
+*.log
+*.pyc
+.idea/*
+**/__pycache__/*
+db.sqlite3
+**/migrations/*
+**/media-root/*
+!**/migrations/__init__.py
