@@ -9,6 +9,7 @@ CREATE_USER_URL = reverse('user:create')
 TOKEN_URL = reverse('user:token')
 ME_URL = reverse('user:me')
 
+
 def create_user(**params):
     return get_user_model().objects.create_user(**params)
 
@@ -50,7 +51,7 @@ class PublicUserApiTests(TestCase):
         """Test that a token is created for user"""
         create_user(**self.payload)
         response = self.client.post(TOKEN_URL, self.payload)
-        self.assertIn('token', response.data)
+        self.assertIn('access', response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_token_invalid_creds(self):
@@ -58,19 +59,19 @@ class PublicUserApiTests(TestCase):
         create_user(**self.payload)
         self.payload["password"] = "pw"
         response = self.client.post(TOKEN_URL, **self.payload)
-        self.assertNotIn("token", response.data)
+        self.assertNotIn("access", response.data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_token_no_user(self):
         response = self.client.post(TOKEN_URL, **self.payload)
-        self.assertNotIn("token", response.data)
+        self.assertNotIn("access", response.data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_token_missing_input_field(self):
         """Test that email and password are required"""
         self.payload["password"] = None
         response = self.client.post(TOKEN_URL, **self.payload)
-        self.assertNotIn("token", response.data)
+        self.assertNotIn("access", response.data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_retrieve_user_unauthorized(self):
@@ -105,9 +106,8 @@ class PrivateUserApiTests(TestCase):
 
     def test_update_user_profile(self):
         """Test updating the user profile for authenticated user"""
-        payload = {"first_name":"kasper", "last_name":"spark"}
-        response= self.client.patch(ME_URL, payload)
-
+        payload = {"first_name": "kasper", "last_name": "spark"}
+        response = self.client.patch(ME_URL, payload)
 
         self.user.refresh_from_db()
         self.assertEqual(self.user.first_name, payload["first_name"])
