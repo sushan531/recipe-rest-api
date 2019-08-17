@@ -17,7 +17,6 @@ class PublicUserApiTests(TestCase):
     def setUp(self) -> None:
         self.client = APIClient()
         self.payload = {
-            "username":"user1",
             "email":"user1@gmail.com",
             "password":"Admin@123",
         }

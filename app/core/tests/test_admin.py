@@ -8,7 +8,6 @@ class AdminSiteTest(TestCase):
         self.client = Client()
         # Creating user
         self.admin_user = get_user_model().objects.create_superuser(
-            username="kasper",
             email="kasper@gmail.com",
             password="Admin@123",
         )
@@ -18,7 +17,6 @@ class AdminSiteTest(TestCase):
 
         # creating normal user
         self.user = get_user_model().objects.create_user(
-            username="test1",
             email="test1@gmail.com",
             password="test1@123",
         )
@@ -27,7 +25,7 @@ class AdminSiteTest(TestCase):
         """Test that users are listed in user page."""
         url = reverse_lazy('admin:core_customuser_changelist')
         response = self.client.get(url)
-        self.assertContains(response, self.user.username)
+        self.assertContains(response, self.user.email)
 
     def test_user_change(self):
         """Test user edit page works"""
