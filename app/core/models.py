@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
+
 # Create your models here.
 class CustomUserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
@@ -77,3 +78,19 @@ class Ingredient(models.Model):
 
     def __repr__(self):
         return f"{self.__class__.__name__}(name: {self.name})"
+
+
+class Recipe(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    time_minutes = models.IntegerField()
+    price = models.DecimalField(max_digits=5, decimal_places=2)
+    link = models.CharField(max_length=255, blank=True, null=True)
+    ingredients = models.ManyToManyField("Ingredient")
+    tags = models.ManyToManyField("Tag")
+
+    def __str__(self):
+        return self.title
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(title: {self.title})"

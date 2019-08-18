@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
-from core.models import Tag, Ingredient
+from core.models import Tag, Ingredient, Recipe
 
 
 def create_user(**params):
@@ -25,5 +25,15 @@ class ModelTests(TestCase):
     def test_ingredient_str(self):
         """Test ingredient string representation"""
         ingredient_name = "cucumber"
-        ingredient = Ingredient.objects.create(user = create_user(**self.payload), name=ingredient_name)
+        ingredient = Ingredient.objects.create(user=create_user(**self.payload), name=ingredient_name)
         self.assertEqual(str(ingredient), ingredient_name)
+
+    def test_recipe_str(self):
+        """Test the recipe string representation"""
+        recipe = Recipe.objects.create(
+            user=create_user(**self.payload),
+            title="Steak and mushroom sauce",
+            time_minutes=5,
+            price=5.00
+        )
+        self.assertEqual(str(recipe), recipe.title)
