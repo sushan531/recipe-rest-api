@@ -1,9 +1,10 @@
 from rest_framework.generics import ListCreateAPIView
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from core.models import Tag, Ingredient
-from recipe.serializers import TagSerializer, IngredientSerializer
+from core.models import Tag, Ingredient, Recipe
+from recipe.serializers import TagSerializer, IngredientSerializer, RecipeSerializer, RecipeDetailSerializer
 
 
 # Create your views here.
@@ -32,3 +33,21 @@ class IngredientViewSet(BaseRecipeAttrViewSet):
     """Manage ingredients in the database"""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
+
+
+class RecipeViewSet(ModelViewSet):
+    """Manage recipe in the database Combines both ListView and DetailView type"""
+    authentication_classes = (JWTAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = RecipeSerializer
+    queryset = Recipe.objects.all()
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
+
+    def get_serializer_class(self):
+        """Return appropriate serializer class"""
+        if self.action == "retrieve":
+            return RecipeDetailSerializer
+        return self.serializer_class
+
