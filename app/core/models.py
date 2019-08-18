@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import ugettext_lazy as _
-
+from django.conf import settings
 
 # Create your models here.
 class CustomUserManager(BaseUserManager):
@@ -52,4 +52,16 @@ class CustomUser(AbstractUser):
         return self.email
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(username:{self.email})"
+        return f"{self.__class__.__name__}(email: {self.email})"
+
+
+class Tag(models.Model):
+    """Tags to be used for recipe"""
+    name = models.CharField(max_length=200)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(name: {self.name})"
