@@ -8,7 +8,6 @@ from core.models import Recipe, Tag, Ingredient
 from recipe.serializers import RecipeSerializer, RecipeDetailSerializer
 
 RECIPE_URL = reverse("recipe:recipe-list")
-RECIPE_CREATE = reverse("recipe:recipe-create")
 
 def detail_url(recipe_id):
     """Return recipe detail url"""
@@ -103,7 +102,7 @@ class PrivateRecipeApiTests(TestCase):
 
     def test_create_basic_recipe(self):
         """Test creating recipe"""
-        response = self.client.post(RECIPE_CREATE, self.recipe_payload)
+        response = self.client.post(RECIPE_URL, self.recipe_payload)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         recipe = Recipe.objects.get(id=response.data["id"])
         for key in self.recipe_payload.keys():
@@ -115,7 +114,7 @@ class PrivateRecipeApiTests(TestCase):
         tag2 = sample_tag(user=self.user, name="dessert")
 
         self.recipe_payload["tags"] = [tag1.id, tag2.id]
-        response = self.client.post(RECIPE_CREATE, self.recipe_payload)
+        response = self.client.post(RECIPE_URL, self.recipe_payload)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         recipe = Recipe.objects.get(id=response.data["id"])
         tags = recipe.tags.all()
@@ -128,9 +127,10 @@ class PrivateRecipeApiTests(TestCase):
         ingredient1 = sample_ingredient(user=self.user, name="prawns")
         ingredient2 = sample_ingredient(user=self.user, name="ginger")
         self.recipe_payload["ingredients"] = [ingredient1.id, ingredient2.id]
-        response = self.client.post(RECIPE_CREATE, self.recipe_payload)
+        response = self.client.post(RECIPE_URL, self.recipe_payload)
         recipe = Recipe.objects.get(id=response.data["id"])
         ingredients = recipe.ingredients.all()
         self.assertEqual(ingredients.count(), 2)
         self.assertIn(ingredient1, ingredients)
         self.assertIn(ingredient2, ingredients)
+        print(RECIPE_URL)
