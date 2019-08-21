@@ -25,4 +25,4 @@ urlpatterns = [
     path("api/recipe/",include("recipe.urls", namespace="recipe"))
 
 ]
-urlpatterns+=static(settings.MEDIAL_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
