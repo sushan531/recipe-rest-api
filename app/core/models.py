@@ -1,8 +1,17 @@
+import uuid
+from pathlib import Path
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
+
+def recipe_image_file_path(instance, filename):
+    """Generate file path for new recipe image"""
+    extension = filename.split(".")[-1]
+    filename = f"{uuid.uuid4()}.{extension}"
+    file_path = Path("uploads/recipe").joinpath(filename)
+    return file_path
 
 # Create your models here.
 class CustomUserManager(BaseUserManager):
@@ -88,6 +97,7 @@ class Recipe(models.Model):
     link = models.CharField(max_length=255, blank=True, null=True)
     ingredients = models.ManyToManyField("Ingredient")
     tags = models.ManyToManyField("Tag")
+    image = models.ImageField(upload_to=recipe_image_file_path, null=True)
 
     def __str__(self):
         return self.title
